@@ -1,0 +1,19 @@
+.astro
+.pytest_cache
+.git
+.env
+.DS_Store # macOS specific ignore
+airflow_settings.yaml
+__pycache__/
+astro
+.venv
+airflow-webserver.pid
+webserver_config.py
+airflow.cfg
+airflow.db
+build/
+*.egg-info
+dags/config/
+dags/ignore/
+config.yml
+.venv

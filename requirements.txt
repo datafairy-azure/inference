@@ -1,0 +1,9 @@
+# Astro Runtime includes the following pre-installed providers packages: https://docs.astronomer.io/astro/runtime-image-architecture#provider-packages
+apache-airflow-providers-microsoft-azure
+pendulum
+pydantic
+azure-ai-ml
+airflow-provider-azure-machinelearning
+azureml-core
+azureml-mlflow
+httpx
