@@ -26,7 +26,7 @@ Extras
 ## Getting started locally:
 
 - Create a virtual environment: python -m venv .venv
-- Activate the venv: source .venv/bin/activate
+- Activate the venv: source .venv/bin/activate or .venv/scripts/activate
 - pip install --upgrade setuptools
 - pip install --upgrade pip
 - pip install -r requirements.txt
