@@ -13,6 +13,13 @@ This project contains the following files and folders:
 - dags/jobs: This folder contains the Python code for the AzureML jobs.
 - dags/jobs/inference/src: This folder contains the source code used in the AzureML inference job and Airflow DAGs.
 
+Files needed for Airflow and Pydantic
+=====================================
+
+To get Pydantic running you need to create a .env file in the root of the project with the following content:
+
+```AIRFLOW__CORE__ALLOWED_DESERIALIZATION_CLASSES=['include.request_model.Request','include.request_model.InputData']```
+
 Extras
 ======
 
