@@ -54,7 +54,7 @@ with DAG(
     predict_command_job = command(
         code=code_file_path,
         command="python main.py --input_data_folder ${{inputs.input_data_folder}} --input_config_yaml ${{inputs.input_config_yaml}}",
-        environment=model_info,
+        environment="environment_name:version",
         inputs={
             "input_config_yaml": Input(
                 mode=InputOutputModes.RO_MOUNT,
