@@ -1,14 +1,14 @@
 import os
 
 import pendulum
-from typing import List
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
 from azure.ai.ml import Input, command
-from airflow.operators.python import PythonOperator
 from azure.ai.ml.entities import ComputeInstance
 from azure.ai.ml.constants import AssetTypes, InputOutputModes
-from airflow_provider_azure.azure_service_bus.operators.service_bus import AzureServiceBusReceiveMessageOperator
+from airflow_provider_azure.azure_service_bus.operators.service_bus import (
+    AzureServiceBusReceiveMessageOperator,
+)
 
 from airflow_provider_azure_machinelearning.operators.machine_learning.job import (
     AzureMachineLearningCreateJobOperator,
@@ -53,7 +53,7 @@ with DAG(
 
     predict_command_job = command(
         code=code_file_path,
-        command="python main.py --endpoint ${{inputs.endpoint}} --input_config_yaml ${{inputs.input_config_yaml}}",
+        command="python main.py --input_data_folder ${{inputs.input_data_folder}} --input_config_yaml ${{inputs.input_config_yaml}}",
         environment=model_info,
         inputs={
             "input_config_yaml": Input(
@@ -80,23 +80,13 @@ with DAG(
     )
 
     receive_message_service_bus_queue = AzureServiceBusReceiveMessageOperator(
-    task_id="receive_message_service_bus_queue",
-    queue_name="QUEUE_NAME",
-    max_message_count=20,
-    max_wait_time=5,
-)
-
-    def download_results(messages: List[str]):
-        pass
-        
-
-    download_results = PythonOperator(
-        task_id="download_results",
-        python_callable=download_results,
-        provide_context=True,
+        task_id="receive_message_service_bus_queue",
+        queue_name="QUEUE_NAME",
+        max_message_count=20,
+        max_wait_time=5,
     )
 
     start_task = EmptyOperator(task_id="start")
     success_task = EmptyOperator(task_id="success")
 
-    start_task >> amlc_create_1 >> predict_task >> [amlc_delete_1, download_results] >> success_task
+    start_task >> amlc_create_1 >> predict_task >> amlc_delete_1 >> success_task
