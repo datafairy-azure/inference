@@ -30,7 +30,7 @@ Extras
 - pip install --upgrade setuptools
 - pip install --upgrade pip
 - pip install -r requirements.txt
-- pip install .jobs/inference/src to install the inference package
+- pip install .dags/jobs/inference/src to install the inference package
 - setup pre-comit hooks: pre-commit install
 
 ## Astronomer CLI Information

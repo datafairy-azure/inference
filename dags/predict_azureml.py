@@ -29,6 +29,7 @@ with DAG(
     # set the connection to the Azure ML workspace and provide the model information
     connection_id = "azure-ml-ws-conn"
     model_info = "credit-default-model:1"
+    queue_id = "mlops-inference-queue"
 
     compute1 = ComputeInstance(
         name="af-test-instance",
@@ -59,12 +60,12 @@ with DAG(
             "input_config_yaml": Input(
                 mode=InputOutputModes.RO_MOUNT,
                 type=AssetTypes.URI_FILE,
-                path="azureml://datastores/xxx/paths/credit_defaults_model/config/config.yml",
+                path="azureml://datastores/datalabdevg3l5esswfosa/paths/credit_defaults_model/config/config.yml",
             ),
             "input_data_folder": Input(
                 mode=InputOutputModes.RO_MOUNT,
                 type=AssetTypes.URI_Folder,
-                path="azureml://datastores/xxx/paths/credit_defaults_model/data",
+                path="azureml://datastores/datalabdevg3l5esswfosa/paths/credit_defaults_model/data",
             ),
         },
         compute=compute1.name,
@@ -81,7 +82,7 @@ with DAG(
 
     receive_message_service_bus_queue = AzureServiceBusReceiveMessageOperator(
         task_id="receive_message_service_bus_queue",
-        queue_name="QUEUE_NAME",
+        queue_name=queue_id,
         max_message_count=20,
         max_wait_time=5,
     )
