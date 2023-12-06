@@ -6,10 +6,6 @@ from airflow.operators.empty import EmptyOperator
 from azure.ai.ml import Input, command
 from azure.ai.ml.entities import ComputeInstance
 from azure.ai.ml.constants import AssetTypes, InputOutputModes
-from airflow_provider_azure.azure_service_bus.operators.service_bus import (
-    AzureServiceBusReceiveMessageOperator,
-)
-
 from airflow_provider_azure_machinelearning.operators.machine_learning.job import (
     AzureMachineLearningCreateJobOperator,
 )
@@ -77,13 +73,6 @@ with DAG(
         job=predict_command_job,
         waiting=True,
         conn_id=connection_id,
-    )
-
-    receive_message_service_bus_queue = AzureServiceBusReceiveMessageOperator(
-        task_id="receive_message_service_bus_queue",
-        queue_name="QUEUE_NAME",
-        max_message_count=20,
-        max_wait_time=5,
     )
 
     start_task = EmptyOperator(task_id="start")
