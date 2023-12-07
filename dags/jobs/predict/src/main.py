@@ -1,5 +1,6 @@
 import argparse
 import sys, os
+import glob
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from inference.utils import (
@@ -23,12 +24,14 @@ def parse_args():
 def main(args):
     cfg = load_config(args.input_config_yaml)
     headers = define_headers(cfg)
-    paths = [
-        args.input_data_folder + "sample_request_1.json",
-        args.input_data_folder + "sample_request_2.json",
-    ]
+
+    paths = glob.glob(args.input_data_folder + "/*.json")
+
+    print(paths)
 
     request_items = parse_requests(paths)
+
+    print(request_items)
 
     return call_endpoint_with_requests(request_items, headers, cfg, "httpx")
 

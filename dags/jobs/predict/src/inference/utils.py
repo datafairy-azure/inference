@@ -23,7 +23,9 @@ def call_endpoint_with_requests(
         res = requests.post(
             url="https://"
             + cfg["deployments"]["endpoint_name"]
-            + ".westeurope.inference.ml.azure.com/score",
+            + "."
+            + cfg["connections"]["location"]
+            + ".inference.ml.azure.com/score",
             data=item,
             headers=headers,
         )

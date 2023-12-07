@@ -1,8 +1,9 @@
 import json
 from typing import List
 import pydantic
+import pendulum as pm
 
-# from airflow.providers.microsoft.azure.hooks.wasb import WasbHook
+from airflow.providers.microsoft.azure.hooks.wasb import WasbHook
 
 
 class InputData(pydantic.BaseModel):
@@ -64,16 +65,16 @@ def prepare_requests(cleaned_requests: List[str]):
     """
     request_locations = []
 
-    # blob_connection = WasbHook(wasb_conn_id="connection_id_blob")
-    # for item in cleaned_requests:
-    #     blob_connection.load_string(
-    #         item,
-    #         "azureml",
-    #         f"inference_input/request_sample_{pm.now().timestamp()}.json",
-    #     )
-    #     request_locations.append(
-    #         f"inference_input/request_sample_{pm.now().timestamp()}.json"
-    #     )
+    blob_connection = WasbHook(wasb_conn_id="connection_id_blob")
+    for item in cleaned_requests:
+        blob_connection.load_string(
+            item,
+            "azureml",
+            f"inference_input/request_sample_{pm.now().timestamp()}.json",
+        )
+        request_locations.append(
+            f"inference_input/request_sample_{pm.now().timestamp()}.json"
+        )
 
     return request_locations
 
@@ -82,10 +83,10 @@ def clean_request(request: Request) -> dict:
     """
     #### Clean data task: no negative values
     """
-    cleaned_dict = {}
-    cleaned_dict["columns"] = request.input_data.columns
-    cleaned_dict["index"] = request.input_data.index
-    cleaned_dict["data"] = [
+    cleaned_dict = {"input_data": {}}
+    cleaned_dict["input_data"]["columns"] = request.input_data.columns
+    cleaned_dict["input_data"]["index"] = request.input_data.index
+    cleaned_dict["input_data"]["data"] = [
         max(item, 0) for items in request.input_data.data for item in items
     ]
     return cleaned_dict
