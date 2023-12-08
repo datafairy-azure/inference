@@ -1,6 +1,8 @@
 import argparse
 import sys, os
 import glob
+from inference.sb import send
+from azure.identity import DefaultAzureCredential
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from inference.utils import (
@@ -24,16 +26,12 @@ def parse_args():
 def main(args):
     cfg = load_config(args.input_config_yaml)
     headers = define_headers(cfg)
-
     paths = glob.glob(args.input_data_folder + "/*.json")
-
-    print(paths)
-
     request_items = parse_requests(paths)
 
-    print(request_items)
-
-    return call_endpoint_with_requests(request_items, headers, cfg, "requests")
+    response = call_endpoint_with_requests(request_items, headers, cfg, "requests")
+    # Send response to service bus queue
+    send(sb_name=cfg["service_bus"]["name"], queue_name=cfg["service_bus"]["queue_name"], type=cfg["service_bus"]["type"], credential=DefaultAzureCredential(), messages=response)
 
 
 if __name__ == "__main__":

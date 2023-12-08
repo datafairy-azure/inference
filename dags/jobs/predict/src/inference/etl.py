@@ -43,7 +43,7 @@ def load_data(json_list: List[str]) -> List[dict]:
     return ordered_data
 
 
-def clean_data(order_data: List[Request]) -> List[str]:
+def clean_data(request_data: List[Request]) -> List[str]:
     """The function "clean_data" takes a list of Request objects as input and returns a list of strings.
 
     Parameters
@@ -54,7 +54,7 @@ def clean_data(order_data: List[Request]) -> List[str]:
     """
     cleaned_requests = []
 
-    for request in order_data:
+    for request in request_data:
         cleaned_dict = clean_request(request)
         cleaned_requests.append(json.dumps(cleaned_dict))
 
@@ -83,10 +83,15 @@ def clean_request(request: Request) -> dict:
     """
     #### Clean data task: no negative values
     """
+    data_items =  []
     cleaned_dict = {"input_data": {}}
     cleaned_dict["input_data"]["columns"] = request.input_data.columns
     cleaned_dict["input_data"]["index"] = request.input_data.index
-    cleaned_dict["input_data"]["data"] = [
-        max(item, 0) for items in request.input_data.data for item in items
-    ]
+    # converts negative values to 0
+    for data_item in range(len(request.input_data.data)):
+        x = [
+            max(item, 0) for item in request.input_data.data[data_item]
+        ]
+        data_items.append(x)
+    cleaned_dict["input_data"]["data"] = data_items
     return cleaned_dict
