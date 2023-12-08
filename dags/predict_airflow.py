@@ -32,8 +32,8 @@ def predict_with_airflow():
         ]
 
         cfg = {
-            "deployments": {"endpoint_name": "datalab-ml-ws-ifrmw"},
-            "connections": {"location": "westeurope"},
+            "deployments": {"endpoint_name": "endpoint_name"},
+            "connections": {"location": "azure-location"},
         }
 
         headers = define_headers_with_sp(
