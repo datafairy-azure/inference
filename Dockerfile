@@ -4,6 +4,8 @@ COPY requirements.txt /opt/airflow/requirements.txt
 
 COPY dags/data /opt/airflow/data
 
+COPY dags/config /opt/airflow/config
+
 COPY dags/jobs /opt/airflow/jobs
 
 USER root

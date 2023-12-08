@@ -33,7 +33,7 @@ def main(args):
 
     print(request_items)
 
-    return call_endpoint_with_requests(request_items, headers, cfg, "httpx")
+    return call_endpoint_with_requests(request_items, headers, cfg, "requests")
 
 
 if __name__ == "__main__":
