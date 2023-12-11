@@ -18,15 +18,23 @@ def call_endpoint_with_requests(
     print("Running logging for " + request_type)
     define_logging_for_request_type(request_type)
 
+    url = "https://" + cfg["deployments"]["endpoint_name"] + "." + cfg["connections"]["location"] + ".inference.ml.azure.com/score"
+
     for item in request_items:
         print(item)
-        res = requests.post(
-            url="https://"
-            + cfg["deployments"]["endpoint_name"]
-            + ".westeurope.inference.ml.azure.com/score",
-            data=item,
-            headers=headers,
-        )
+        if request_type == "httpx":
+            import httpx
+            res = httpx.post(
+                url=url,
+                data=item,
+                headers=headers,
+            )
+        elif request_type == "requests":
+            res = requests.post(
+                url=url,
+                data=item,
+                headers=headers,
+            )
         print(res.text)
         response.append({"status": str(res.status_code), "prediction": res.text})
 

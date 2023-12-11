@@ -32,12 +32,12 @@ def predict_with_airflow():
         ]
 
         cfg = {
-            "deployments": {"endpoint_name": "endpoint-xxx"},
+            "deployments": {"endpoint_name": "endpoint_name"},
             "connections": {"location": "azure-location"},
         }
 
         headers = define_headers_with_sp(
-            config_path="/opt/airflow/data/config/config.json",
+            config_path="/opt/airflow/config/config.json",
             endpoint=cfg["deployments"]["endpoint_name"],
         )
 
