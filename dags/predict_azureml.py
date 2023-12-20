@@ -24,7 +24,6 @@ with DAG(
     # set the connection to the Azure ML workspace and provide the model information
     connection_id = "azure-ml-ws-conn"
     model_info = "credit-default-model:1"
-    queue_id = "mlops-inference-queue"
 
     compute1 = ComputeInstance(
         name="compute-123-inference",
@@ -56,7 +55,7 @@ with DAG(
     predict_command_job = command(
         code=code_file_path,
         command="python main.py --input_data_folder ${{inputs.input_data_folder}} --input_config_yaml ${{inputs.input_config_yaml}}",
-        environment="credit-default-env:version",
+        environment="credit-default-env:4",
         inputs={
             "input_config_yaml": Input(
                 mode=InputOutputModes.RO_MOUNT,
@@ -80,13 +79,6 @@ with DAG(
         job=predict_command_job,
         waiting=True,
         conn_id=connection_id,
-    )
-
-    receive_message_service_bus_queue = AzureServiceBusReceiveMessageOperator(
-        task_id="receive_message_service_bus_queue",
-        queue_name="QUEUE_NAME",
-        max_message_count=20,
-        max_wait_time=5,
     )
 
     start_task = EmptyOperator(task_id="start")
