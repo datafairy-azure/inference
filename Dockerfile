@@ -4,11 +4,9 @@ COPY requirements.txt /opt/airflow/requirements.txt
 
 COPY dags/data /opt/airflow/data
 
+COPY dags/config /opt/airflow/config
+
 COPY dags/jobs /opt/airflow/jobs
-
-COPY src/__init__.py /opt/airflow/src/__init__.py
-
-COPY src/pyproject.toml /opt/airflow/src/pyproject.toml
 
 USER root
 

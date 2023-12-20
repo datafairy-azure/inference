@@ -1,5 +1,8 @@
 import argparse
 import sys, os
+import glob
+import asyncio
+from azure.identity.aio import DefaultAzureCredential
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from inference.utils import (
@@ -8,6 +11,7 @@ from inference.utils import (
     call_endpoint_with_requests,
     parse_requests,
 )
+from inference.sb import send
 
 
 def parse_args():
@@ -23,15 +27,20 @@ def parse_args():
 def main(args):
     cfg = load_config(args.input_config_yaml)
     headers = define_headers(cfg)
-    paths = [
-        args.input_data_folder + "sample_request_1.json",
-        args.input_data_folder + "sample_request_2.json",
-    ]
-
+    paths = glob.glob(args.input_data_folder + "/*.json")
     request_items = parse_requests(paths)
 
-    return call_endpoint_with_requests(request_items, headers, cfg, "httpx")
-
+    response = call_endpoint_with_requests(request_items, headers, cfg, "requests")
+    # Send response to service bus queue
+    asyncio.run(
+        send(
+            sb_name=cfg["service_bus"]["name"], 
+            queue_name=cfg["service_bus"]["queue_name"], 
+            type=cfg["service_bus"]["type"], 
+            credential=DefaultAzureCredential(), 
+            messages=response
+        )
+    )
 
 if __name__ == "__main__":
     args = parse_args()
