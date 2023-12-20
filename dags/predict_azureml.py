@@ -56,22 +56,17 @@ with DAG(
     predict_command_job = command(
         code=code_file_path,
         command="python main.py --input_data_folder ${{inputs.input_data_folder}} --input_config_yaml ${{inputs.input_config_yaml}}",
-        environment="credit-default-env:4",
+        environment="credit-default-env:version",
         inputs={
             "input_config_yaml": Input(
                 mode=InputOutputModes.RO_MOUNT,
                 type=AssetTypes.URI_FILE,
-                path="azureml://datastores/datalabdevg3l5esswfosa/paths/credit_defaults_model/config/config.yml",
+                path="azureml://datastores/xxx/paths/credit_defaults_model/config/config.yml",
             ),
             "input_data_folder": Input(
                 mode=InputOutputModes.RO_MOUNT,
-<<<<<<< HEAD
-                type=AssetTypes.URI_Folder,
-                path="azureml://datastores/datalabdevg3l5esswfosa/paths/credit_defaults_model/data",
-=======
                 type=AssetTypes.URI_FOLDER,
                 path="azureml://datastores/xxx/paths/credit_defaults_model/data",
->>>>>>> 8be6768d8366e55972848d8123777ce7b992ba9f
             ),
         },
         environment_variables=env_servicebus,
@@ -87,16 +82,13 @@ with DAG(
         conn_id=connection_id,
     )
 
-<<<<<<< HEAD
     receive_message_service_bus_queue = AzureServiceBusReceiveMessageOperator(
         task_id="receive_message_service_bus_queue",
-        queue_name=queue_id,
+        queue_name="QUEUE_NAME",
         max_message_count=20,
         max_wait_time=5,
     )
 
-=======
->>>>>>> 8be6768d8366e55972848d8123777ce7b992ba9f
     start_task = EmptyOperator(task_id="start")
     success_task = EmptyOperator(task_id="success")
 
